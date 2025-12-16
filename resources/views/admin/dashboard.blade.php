@@ -65,7 +65,7 @@
                 </div>
                 <div class="flex-1 overflow-y-auto space-y-3" data-pending-list>
                     @forelse ($pendingMessages as $message)
-                        <article data-message-card="{{ $message->id }}" class="bg-white shadow-lg rounded-xl border border-emerald-100 p-4 space-y-3">
+                        <article data-message-card="{{ $message->id }}" data-id="{{ $message->id }}" class="bg-white shadow-lg rounded-xl border border-emerald-100 p-4 space-y-3">
                             <div class="flex items-start justify-between gap-3">
                                 <div>
                                     <p class="text-xs uppercase tracking-wide text-emerald-700">{{ $message->created_at->format('H:i') }}</p>

@@ -62,9 +62,16 @@ const initPublicChat = () => {
 	const emptyState = root.querySelector('[data-empty-chat]');
 	const existing = root.dataset.messages ? JSON.parse(root.dataset.messages) : [];
 
+
 	const appendMessage = (message) => {
+		// Cek duplikasi: cari elemen dengan data-id pesan yang sama
+		if (list?.querySelector(`[data-id="${message.id}"]`)) {
+			return; // Sudah ada, jangan tambahkan lagi
+		}
 		emptyState?.classList.add('hidden');
-		list?.appendChild(renderMessageCard(message));
+		const card = renderMessageCard(message);
+		card.setAttribute('data-id', message.id);
+		list?.appendChild(card);
 		list?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
 	};
 
@@ -148,10 +155,14 @@ const initAdminDashboard = () => {
 
 	const addPendingCard = (message) => {
 		emptyPending?.classList.add('hidden');
-
+		// Cek duplikasi: cari elemen dengan data-id pesan yang sama
+		if (pendingList?.querySelector(`[data-id="${message.id}"]`)) {
+			return; // Sudah ada, jangan tambahkan lagi
+		}
 		const card = document.createElement('article');
-		card.dataset.messageCard = message.id;
 		card.className = 'bg-white shadow-lg rounded-xl border border-emerald-100 p-4 space-y-3';
+		card.setAttribute('data-message-card', message.id);
+		card.setAttribute('data-id', message.id);
 
 		const header = document.createElement('div');
 		header.className = 'flex items-start justify-between gap-3';
@@ -218,8 +229,13 @@ const initAdminDashboard = () => {
 	};
 
 	const addFeedCard = (message) => {
+		// Cek duplikasi: cari elemen dengan data-id pesan yang sama
+		if (feedList?.querySelector(`[data-id="${message.id}"]`)) {
+			return; // Sudah ada, jangan tambahkan lagi
+		}
 		const card = renderMessageCard(message);
 		card.classList.add('bg-white/95', 'border', 'border-emerald-100');
+		card.setAttribute('data-id', message.id);
 		feedList?.appendChild(card);
 		feedList?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
 	};

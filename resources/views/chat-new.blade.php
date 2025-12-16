@@ -40,7 +40,7 @@
             <div class="flex items-center justify-between">
                 <!-- Left: Back + Nickname -->
                 <div class="flex items-center space-x-4">
-                    <a href=\"{{ route('chat.logout') }}\" class=\"group flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 hover:bg-red-100 hover:border-red-300 border-2 border-transparent transition-all\" title=\"Kembali & Ganti Nickname\">
+                    <a href="{{ route('chat.logout') }}" class="group flex items-center justify-center w-10 h-10 rounded-xl bg-gray-100 hover:bg-red-100 hover:border-red-300 border-2 border-transparent transition-all" title="Kembali & Ganti Nickname">
                         <svg class="w-5 h-5 text-gray-600 group-hover:text-red-600 group-hover:-translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -153,19 +153,19 @@
                             </p>
                             <ul data-chat-list class="space-y-4">
                                 @foreach ($messages as $message)
-                                    <li class="group bg-white rounded-2xl p-5 shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 animate-slideUp">
+                                    <li class="group bg-white rounded-2xl p-3 sm:p-5 shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 animate-slideUp">
                                         <div class="flex items-start space-x-4">
                                             <div class="flex-shrink-0">
-                                                <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 via-pink-400 to-purple-400 flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform">
+                                                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-rose-400 via-pink-400 to-purple-400 flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg group-hover:scale-110 transition-transform">
                                                     {{ strtoupper(substr($message->username, 0, 1)) }}
                                                 </div>
                                             </div>
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center justify-between mb-2">
-                                                    <span class="text-base font-bold text-gray-900">{{ $message->username }}</span>
+                                                    <span class="text-sm sm:text-base font-bold text-gray-900">{{ $message->username }}</span>
                                                     <span class="text-xs text-gray-500 font-medium">{{ $message->approved_at?->format('H:i') ?? $message->created_at->format('H:i') }}</span>
                                                 </div>
-                                                <p class="text-sm text-gray-700 leading-relaxed">{{ $message->content }}</p>
+                                                <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">{{ $message->content }}</p>
                                             </div>
                                         </div>
                                     </li>
