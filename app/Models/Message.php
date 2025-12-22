@@ -14,6 +14,7 @@ class Message extends Model
     protected $fillable = [
         'username',
         'content',
+        'image_path',
         'status',
         'approved_by',
         'approved_at',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Intervention\Image\ImageManagerStatic as Image;
 use App\Events\MessageSubmitted;
 use App\Models\Message;
 use Illuminate\Http\Request;
@@ -67,11 +68,26 @@ class ChatController extends Controller
         $validated = $request->validate([
             'username' => ['required', 'string', 'max:80'],
             'content' => ['required', 'string', 'max:500'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:10240'], // 10MB
         ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $ext = strtolower($image->getClientOriginalExtension());
+            $filename = uniqid('chatimg_') . '.' . $ext;
+
+            // Simpan file tanpa kompresi (karena GD belum tersedia di Apache)
+            $savePath = 'chat-images/' . $filename;
+            // Simpan di disk 'public' supaya muncul di public/storage
+            $image->storeAs('chat-images', $filename, 'public');
+            $imagePath = 'storage/' . $savePath;
+        }
 
         $message = Message::create([
             'username' => $validated['username'],
             'content' => $validated['content'],
+            'image_path' => $imagePath,
             'status' => Message::STATUS_PENDING,
         ]);
 

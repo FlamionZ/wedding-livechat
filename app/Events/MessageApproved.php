@@ -3,13 +3,13 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Message;
 use Illuminate\Broadcasting\Channel;
 
-class MessageApproved implements ShouldBroadcast
+class MessageApproved implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -38,6 +38,7 @@ class MessageApproved implements ShouldBroadcast
             'status' => $this->message->status,
             'approved_at' => $this->message->approved_at?->toIso8601String(),
             'created_at' => $this->message->created_at?->toIso8601String(),
+            'image_path' => $this->message->image_path,
         ];
     }
 }

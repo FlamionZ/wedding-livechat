@@ -45,6 +45,11 @@
                                     <div class="text-xs text-emerald-600">{{ $message->approved_at?->format('H:i') ?? $message->created_at->format('H:i') }}</div>
                                 </div>
                                 <p class="text-sm text-emerald-950 leading-relaxed">{{ $message->content }}</p>
+                                @if ($message->image_path)
+                                    <div class="mt-2">
+                                        <img src="{{ asset($message->image_path) }}" alt="Foto ucapan" class="max-h-60 rounded-lg border border-emerald-200 shadow-sm" loading="lazy">
+                                    </div>
+                                @endif
                             </li>
                         @endforeach
                     </ul>

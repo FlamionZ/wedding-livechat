@@ -166,6 +166,11 @@
                                                     <span class="text-xs text-gray-500 font-medium">{{ $message->approved_at?->format('H:i') ?? $message->created_at->format('H:i') }}</span>
                                                 </div>
                                                 <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">{{ $message->content }}</p>
+                                                @if ($message->image_path)
+                                                    <div class="mt-2">
+                                                        <img src="{{ asset($message->image_path) }}" alt="Foto ucapan" class="max-h-60 rounded-lg border border-gray-200 shadow-sm" loading="lazy">
+                                                    </div>
+                                                @endif
                                             </div>
                                         </div>
                                     </li>
@@ -195,11 +200,25 @@
 
                 <!-- Form Card -->
                 <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 overflow-hidden">
-                    <form action="{{ route('messages.store') }}" method="POST" class="p-6 space-y-6" id="messageForm">
+                    <form action="{{ route('messages.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6" id="messageForm">
                         @csrf
                         <input type="hidden" name="username" value="{{ session('nickname', 'Guest') }}">
                         
                         <div class="space-y-3">
+                                                    <!-- Input Gambar -->
+                                                    <div class="space-y-1">
+                                                        <label for="image" class="block text-base font-black text-gray-900 uppercase tracking-wide">Foto (opsional)</label>
+                                                        <input type="file" name="image" id="image" accept="image/jpeg,image/png,image/webp" class="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-rose-50 file:text-rose-700 hover:file:bg-rose-100" />
+                                                        <p class="text-xs text-gray-500">Format: JPG, PNG, atau WEBP. Maksimal 1 gambar per pesan.</p>
+                                                        @error('image')
+                                                            <p class="text-sm text-red-600 flex items-center space-x-1">
+                                                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                                                </svg>
+                                                                <span>{{ $message }}</span>
+                                                            </p>
+                                                        @enderror
+                                                    </div>
                             <label class="block text-base font-black text-gray-900 uppercase tracking-wide" for="content">
                                 Pesan Anda
                             </label>

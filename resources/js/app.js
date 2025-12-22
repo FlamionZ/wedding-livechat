@@ -47,6 +47,19 @@ const renderMessageCard = (message) => {
 	contentWrapper.appendChild(header);
 	contentWrapper.appendChild(body);
 
+	// Optional image
+	if (message.image_path) {
+		const imgWrap = document.createElement('div');
+		imgWrap.className = 'mt-2';
+		const img = document.createElement('img');
+		img.src = message.image_path.startsWith('http') ? message.image_path : (window.location.origin + '/' + message.image_path.replace(/^\//, ''));
+		img.alt = 'Foto ucapan';
+		img.loading = 'lazy';
+		img.className = 'max-h-60 rounded-lg border border-gray-200 shadow-sm';
+		imgWrap.appendChild(img);
+		contentWrapper.appendChild(imgWrap);
+	}
+
 	container.appendChild(avatar);
 	container.appendChild(contentWrapper);
 	wrapper.appendChild(container);
@@ -103,7 +116,7 @@ const initAdminDashboard = () => {
 	if (!root) return;
 
 	const pendingList = root.querySelector('[data-pending-list]');
-	const feedList = root.querySelector('[data-feed-list]');
+	const feedList = document.querySelector('[data-feed-list]');
 	const emptyPending = root.querySelector('[data-empty-pending]');
 
 	const wireActionForm = (form) => {
@@ -188,6 +201,19 @@ const initAdminDashboard = () => {
 		body.className = 'text-sm text-emerald-950 leading-relaxed';
 		body.textContent = message.content;
 
+		// Optional image for pending card
+		let imgWrap = null;
+		if (message.image_path) {
+			imgWrap = document.createElement('div');
+			imgWrap.className = 'mt-2';
+			const img = document.createElement('img');
+			img.src = message.image_path.startsWith('http') ? message.image_path : (window.location.origin + '/' + message.image_path.replace(/^\//, ''));
+			img.alt = 'Foto ucapan';
+			img.loading = 'lazy';
+			img.className = 'max-h-60 rounded-lg border border-emerald-200 shadow-sm';
+			imgWrap.appendChild(img);
+		}
+
 		const actions = document.createElement('div');
 		actions.className = 'flex gap-2';
 
@@ -220,6 +246,7 @@ const initAdminDashboard = () => {
 
 		card.appendChild(header);
 		card.appendChild(body);
+		if (imgWrap) card.appendChild(imgWrap);
 		card.appendChild(actions);
 
 		pendingList?.prepend(card);
@@ -233,9 +260,45 @@ const initAdminDashboard = () => {
 		if (feedList?.querySelector(`[data-id="${message.id}"]`)) {
 			return; // Sudah ada, jangan tambahkan lagi
 		}
-		const card = renderMessageCard(message);
-		card.classList.add('bg-white/95', 'border', 'border-emerald-100');
+		
+		const card = document.createElement('li');
+		card.className = 'list-none bg-white border border-emerald-100 rounded-xl px-2 sm:px-4 py-2 sm:py-3 shadow-sm';
 		card.setAttribute('data-id', message.id);
+
+		const header = document.createElement('div');
+		header.className = 'flex items-center justify-between mb-1';
+
+		const username = document.createElement('p');
+		username.className = 'text-sm font-semibold text-emerald-900';
+		username.textContent = message.username;
+
+		const time = document.createElement('span');
+		time.className = 'text-xs text-emerald-600';
+		time.textContent = formatTime(message.approved_at || message.created_at);
+
+		header.appendChild(username);
+		header.appendChild(time);
+
+		const body = document.createElement('p');
+		body.className = 'text-xs sm:text-sm text-emerald-950 leading-relaxed';
+		body.textContent = message.content;
+
+		card.appendChild(header);
+		card.appendChild(body);
+
+		// Add image if exists
+		if (message.image_path) {
+			const imgWrap = document.createElement('div');
+			imgWrap.className = 'mt-2';
+			const img = document.createElement('img');
+			img.src = message.image_path.startsWith('http') ? message.image_path : (window.location.origin + '/' + message.image_path.replace(/^\//, ''));
+			img.alt = 'Foto ucapan';
+			img.loading = 'lazy';
+			img.className = 'max-h-60 rounded-lg border border-emerald-200 shadow-sm';
+			imgWrap.appendChild(img);
+			card.appendChild(imgWrap);
+		}
+
 		feedList?.appendChild(card);
 		feedList?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
 	};

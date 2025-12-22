@@ -9,7 +9,7 @@ const reverbScheme = import.meta.env.VITE_REVERB_SCHEME || (window.location.prot
 
 console.log('🔧 Echo Configuration:', {
     broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
+    key: import.meta.env.VITE_REVERB_APP_KEY || 'local',
     wsHost: reverbHost,
     wsPort: reverbPort,
     scheme: reverbScheme,
@@ -17,7 +17,7 @@ console.log('🔧 Echo Configuration:', {
 
 window.Echo = new Echo({
     broadcaster: 'reverb',
-    key: import.meta.env.VITE_REVERB_APP_KEY,
+    key: import.meta.env.VITE_REVERB_APP_KEY || 'local',
     wsHost: reverbHost,
     wsPort: reverbPort,
     wssPort: reverbPort,

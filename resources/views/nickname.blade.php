@@ -166,7 +166,7 @@
                 <div class="inline-flex items-center space-x-2 px-4 py-2 bg-white/80 backdrop-blur-lg rounded-full shadow-lg border border-gray-200">
                     <span class="text-red-500 text-base sm:text-lg animate-pulse">❤️</span>
                     <p class="text-gray-900 text-sm font-bold">
-                        Wedding Live Chat System
+                        Astheron Technologies
                     </p>
                 </div>
             </div>
