@@ -17,7 +17,12 @@ class MessageModerationController extends Controller
     {
         return view('admin.dashboard', [
             'pendingMessages' => Message::pending()->latest()->get(),
-            'approvedMessages' => Message::approved()->latest()->take(50)->get(),
+            'approvedMessages' => Message::approved()
+                ->orderByDesc('created_at')
+                ->take(50)
+                ->get()
+                ->sortBy('created_at')
+                ->values(),
         ]);
     }
 
@@ -68,6 +73,9 @@ class MessageModerationController extends Controller
                     'username' => $message->username,
                     'content' => $message->content,
                     'approved_at' => $message->approved_at?->toIso8601String(),
+                    'created_at' => $message->created_at?->toIso8601String(),
+                    'image_path' => $message->image_path ? asset($message->image_path) : null,
+                    'display_time' => ($message->approved_at ?? $message->created_at)?->timezone(config('app.timezone'))?->format('H:i'),
                 ],
             ]);
         }

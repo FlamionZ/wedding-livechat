@@ -38,7 +38,10 @@ class MessageApproved implements ShouldBroadcastNow
             'status' => $this->message->status,
             'approved_at' => $this->message->approved_at?->toIso8601String(),
             'created_at' => $this->message->created_at?->toIso8601String(),
-            'image_path' => $this->message->image_path,
+            'image_path' => $this->message->image_path ? asset($this->message->image_path) : null,
+            'display_time' => ($this->message->approved_at ?? $this->message->created_at)
+                ->timezone(config('app.timezone'))
+                ->format('H:i'),
         ];
     }
 }

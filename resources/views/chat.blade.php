@@ -38,7 +38,7 @@
                 <div class="bg-white/10 border border-white/15 rounded-xl p-4 h-[520px] overflow-y-auto space-y-3" data-chat-scroll>
                     <p data-empty-chat class="text-sm text-emerald-100/80 {{ $messages->isNotEmpty() ? 'hidden' : '' }}">Belum ada pesan tampil. Kirim pesan pertamamu!</p>
                     <ul data-chat-list class="space-y-3">
-                        @foreach ($messages as $message)
+                        @foreach ($messages->reverse() as $message)
                             <li class="bg-white/90 backdrop-blur shadow-md rounded-xl px-4 py-3 border border-emerald-50">
                                 <div class="flex items-center justify-between mb-1">
                                     <div class="text-sm font-semibold text-emerald-900">{{ $message->username }}</div>

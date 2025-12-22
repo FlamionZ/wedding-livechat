@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="app-timezone" content="{{ config('app.timezone') }}">
     <title>{{ config('app.name', 'Wedding Live Chat') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -118,7 +119,7 @@
         @endif
 
         <!-- Main Grid -->
-        <div id="chat-app" data-messages='@json($messages)' class="grid lg:grid-cols-3 gap-6">
+        <div id="chat-app" data-messages='@json($messagesPayload)' class="grid lg:grid-cols-3 gap-6">
             <!-- Chat Messages (Left 2/3) -->
             <section class="lg:col-span-2 space-y-4">
                 <!-- Section Header -->
@@ -145,7 +146,7 @@
                 <!-- Messages Container -->
                 <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 overflow-hidden">
                     <div class="p-6">
-                        <div class="bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 rounded-2xl p-4 h-[580px] overflow-y-auto space-y-4 custom-scrollbar" data-chat-scroll>
+                        <div class="bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 rounded-2xl p-4 h-[580px] overflow-y-auto space-y-4 custom-scrollbar" data-chat-scroll id="chatScrollContainer">
                             <p data-empty-chat class="text-center py-16 {{ $messages->isNotEmpty() ? 'hidden' : '' }}">
                                 <span class="inline-block text-6xl mb-4">💌</span>
                                 <span class="block text-lg text-gray-500 font-medium">Belum ada pesan</span>

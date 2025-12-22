@@ -1,11 +1,23 @@
 import './bootstrap';
 
 const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+const appTimeZone = document.querySelector('meta[name="app-timezone"]')?.getAttribute('content') || 'Asia/Jakarta';
 
-const formatTime = (iso) => {
+const getDisplayTime = (message) => {
+	if (message.display_time) return message.display_time;
+	const iso = message.approved_at || message.created_at;
 	if (!iso) return '';
-	const date = new Date(iso);
-	return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+	try {
+		return new Intl.DateTimeFormat('id-ID', {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false,
+			timeZone: appTimeZone,
+		}).format(new Date(iso));
+	} catch (e) {
+		const date = new Date(iso);
+		return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', hour12: false });
+	}
 };
 
 const renderMessageCard = (message) => {
@@ -34,7 +46,7 @@ const renderMessageCard = (message) => {
 
 	const time = document.createElement('span');
 	time.className = 'text-xs text-gray-500 font-medium';
-	time.textContent = formatTime(message.approved_at || message.created_at);
+	time.textContent = getDisplayTime(message);
 
 	header.appendChild(name);
 	header.appendChild(time);
@@ -72,9 +84,24 @@ const initPublicChat = () => {
 	if (!root) return;
 
 	const list = root.querySelector('[data-chat-list]');
+	const chatScroll = root.querySelector('[data-chat-scroll]');
 	const emptyState = root.querySelector('[data-empty-chat]');
 	const existing = root.dataset.messages ? JSON.parse(root.dataset.messages) : [];
 
+	// Fungsi untuk scroll ke bawah KERAS
+	const forceScrollToBottom = () => {
+		const container = document.getElementById('chatScrollContainer') || chatScroll;
+		if (container) {
+			container.scrollTop = container.scrollHeight + 9999;
+			console.log('📍 Scroll to bottom:', container.scrollTop, '/', container.scrollHeight);
+		}
+	};
+
+	const scrollToBottom = (behavior = 'smooth') => {
+		if (chatScroll) {
+			chatScroll.scrollTo({ top: chatScroll.scrollHeight, behavior });
+		}
+	};
 
 	const appendMessage = (message) => {
 		// Cek duplikasi: cari elemen dengan data-id pesan yang sama
@@ -85,12 +112,47 @@ const initPublicChat = () => {
 		const card = renderMessageCard(message);
 		card.setAttribute('data-id', message.id);
 		list?.appendChild(card);
-		list?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+		scrollToBottom();
 	};
 
-	if (list && list.children.length === 0) {
-		existing.forEach((message) => appendMessage(message));
-	}
+	// JANGAN RENDER ULANG - pesan sudah ada di Blade
+	// Langsung scroll ke bawah SEKARANG
+	forceScrollToBottom();
+	
+	// Eksekusi scroll berkali-kali dengan berbagai timing
+	requestAnimationFrame(forceScrollToBottom);
+	setTimeout(forceScrollToBottom, 0);
+	setTimeout(forceScrollToBottom, 10);
+	setTimeout(forceScrollToBottom, 50);
+	setTimeout(forceScrollToBottom, 100);
+	setTimeout(forceScrollToBottom, 200);
+	setTimeout(forceScrollToBottom, 500);
+	setTimeout(forceScrollToBottom, 1000);
+	
+	// Event listener untuk gambar yang belum loaded
+	const images = document.querySelectorAll('[data-chat-scroll] img');
+	images.forEach(img => {
+		if (!img.complete) {
+			img.addEventListener('load', forceScrollToBottom);
+			img.addEventListener('error', forceScrollToBottom);
+		}
+	});
+	
+	// Scroll saat window fully loaded
+	window.addEventListener('load', forceScrollToBottom);
+
+	// Render pesan dari existing data HANYA jika list kosong (untuk Echo realtime)
+	const appendMessageForEcho = (message) => {
+		// Cek duplikasi: cari elemen dengan data-id pesan yang sama
+		if (list?.querySelector(`[data-id="${message.id}"]`)) {
+			return; // Sudah ada, jangan tambahkan lagi
+		}
+		emptyState?.classList.add('hidden');
+		const card = renderMessageCard(message);
+		card.setAttribute('data-id', message.id);
+		list?.appendChild(card);
+		forceScrollToBottom();
+	};
 
 	if (window.Echo) {
 		console.log('🔌 Subscribing to public.chat channel...');
@@ -103,7 +165,7 @@ const initPublicChat = () => {
 					content: event.content,
 					approved_at: event.approved_at
 				});
-				appendMessage(event);
+				appendMessageForEcho(event);
 				console.log('✨ Message appended to chat list');
 			});
 	} else {
@@ -117,6 +179,7 @@ const initAdminDashboard = () => {
 
 	const pendingList = root.querySelector('[data-pending-list]');
 	const feedList = document.querySelector('[data-feed-list]');
+	const feedScroll = document.querySelector('[data-feed-scroll]');
 	const emptyPending = root.querySelector('[data-empty-pending]');
 
 	const wireActionForm = (form) => {
@@ -183,7 +246,7 @@ const initAdminDashboard = () => {
 		const headerText = document.createElement('div');
 		const time = document.createElement('p');
 		time.className = 'text-xs uppercase tracking-wide text-emerald-700';
-		time.textContent = formatTime(message.created_at);
+		time.textContent = getDisplayTime(message);
 		const username = document.createElement('p');
 		username.className = 'text-lg font-semibold text-emerald-900';
 		username.textContent = message.username;
@@ -255,6 +318,12 @@ const initAdminDashboard = () => {
 		wireActionForm(rejectForm);
 	};
 
+	const scrollFeedBottom = (behavior = 'smooth') => {
+		if (feedScroll) {
+			feedScroll.scrollTo({ top: feedScroll.scrollHeight, behavior });
+		}
+	};
+
 	const addFeedCard = (message) => {
 		// Cek duplikasi: cari elemen dengan data-id pesan yang sama
 		if (feedList?.querySelector(`[data-id="${message.id}"]`)) {
@@ -274,7 +343,7 @@ const initAdminDashboard = () => {
 
 		const time = document.createElement('span');
 		time.className = 'text-xs text-emerald-600';
-		time.textContent = formatTime(message.approved_at || message.created_at);
+		time.textContent = getDisplayTime(message);
 
 		header.appendChild(username);
 		header.appendChild(time);
@@ -300,10 +369,18 @@ const initAdminDashboard = () => {
 		}
 
 		feedList?.appendChild(card);
-		feedList?.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+		scrollFeedBottom();
 	};
 
 	root.querySelectorAll('form[data-action]').forEach(wireActionForm);
+
+	// Pastikan feed awal berada di bawah (pesan terbaru di bawah)
+	setTimeout(() => {
+		const lastFeed = feedList?.lastElementChild;
+		if (lastFeed) {
+			feedScroll?.scrollTo({ top: feedScroll.scrollHeight, behavior: 'auto' });
+		}
+	}, 50);
 
 	if (window.Echo) {
 		console.log('🔌 Admin: Subscribing to channels...');

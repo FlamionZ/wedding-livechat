@@ -4,25 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="app-timezone" content="{{ config('app.timezone') }}">
     <title>Admin Dashboard | {{ config('app.name') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-[#00c853] text-emerald-950">
+<body class="min-h-screen bg-white text-emerald-950">
     <div class="max-w-6xl mx-auto px-2 sm:px-6 py-4 sm:py-10 space-y-4 sm:space-y-6">
         <div class="flex items-center justify-between">
             <div>
-                <p class="text-xs uppercase tracking-[0.25em] text-emerald-900">Dashboard Admin</p>
-                <h1 class="text-2xl sm:text-3xl font-bold">Moderasi Pesan Live Chat</h1>
-                <p class="text-emerald-900/80 text-xs sm:text-base">Layar hijau (greenscreen) siap untuk kebutuhan multimedia/live streaming.</p>
+                <p class="text-xs uppercase tracking-[0.25em] text-blue-700">Dashboard Admin</p>
+                <h1 class="text-2xl sm:text-3xl font-bold text-blue-900">Moderasi Pesan Live Chat</h1>
+                <p class="text-blue-900/80 text-xs sm:text-base">Layar hijau (greenscreen) siap untuk kebutuhan multimedia/live streaming.</p>
             </div>
             <div class="flex items-center gap-3">
-                <div class="bg-white/80 px-4 py-2 rounded-xl shadow">
-                    <p class="text-sm font-semibold">{{ auth()->user()->name }}</p>
-                    <p class="text-xs text-emerald-900/70">Admin</p>
+                <div class="bg-blue-50 px-4 py-2 rounded-xl shadow border border-blue-200">
+                    <p class="text-sm font-semibold text-blue-900">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-blue-700">Admin</p>
                 </div>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="px-4 py-2 rounded-lg bg-emerald-900 text-white text-sm font-semibold shadow hover:bg-emerald-950">Logout</button>
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-blue-700 text-white text-sm font-semibold shadow hover:bg-blue-800">Logout</button>
                 </form>
             </div>
         </div>
@@ -41,10 +42,10 @@
                 </div>
                 <!-- Feed Pesan Live di dalam Greenscreen -->
                 <div class="w-full flex-1 flex flex-col items-center justify-start">
-                    <div class="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto bg-white/90 rounded-xl shadow border border-emerald-200 p-2 sm:p-4 mt-2" style="max-height:340px; min-height:120px; overflow-y:auto;">
+                    <div class="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto bg-[#00FF00] rounded-xl shadow border border-emerald-200 p-2 sm:p-4 mt-2" style="max-height:340px; min-height:120px; overflow-y:auto;" data-feed-scroll>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs uppercase tracking-[0.2em] text-emerald-600">Live Feed</span>
-                            <span class="px-2 py-0.5 text-xs rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">On Air</span>
+                            <span class="px-2 py-0.5 text-xs rounded-full bg-yellow-200 text-yellow-900 border border-yellow-300">On Air</span>
                         </div>
                         <ul class="space-y-2" data-feed-list>
                             @forelse ($approvedMessages as $message)
@@ -75,7 +76,7 @@
                         <p class="text-xs uppercase tracking-[0.2em] text-emerald-600">Right Screen</p>
                         <h2 class="text-2xl font-semibold text-emerald-900">Antrian Pending</h2>
                     </div>
-                    <span class="px-3 py-1 text-xs rounded-full bg-amber-50 text-amber-700 border border-amber-200">Review</span>
+                    <span class="px-3 py-1 text-xs rounded-full bg-yellow-200 text-yellow-900 border border-yellow-300">Review</span>
                 </div>
                 <div class="flex-1 overflow-y-auto space-y-3" data-pending-list>
                     @forelse ($pendingMessages as $message)

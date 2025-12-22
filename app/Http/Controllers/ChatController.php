@@ -46,12 +46,28 @@ class ChatController extends Controller
             return redirect()->route('chat.nickname');
         }
 
-        $messages = Message::approved()
-            ->latest()
-            ->take(50)
-            ->get()
-            ->reverse()
-            ->values();
+            $messages = Message::where('status', Message::STATUS_APPROVED)
+                ->orderByDesc('created_at')
+                ->take(50)
+                ->get()
+                ->sortBy('created_at')
+                ->values();
+
+        $messagesPayload = $messages->map(function ($message) {
+            $time = ($message->approved_at ?? $message->created_at)
+                ->timezone(config('app.timezone'))
+                ->format('H:i');
+
+            return [
+                'id' => $message->id,
+                'username' => $message->username,
+                'content' => $message->content,
+                'image_path' => $message->image_path ? asset($message->image_path) : null,
+                'approved_at' => $message->approved_at?->toIso8601String(),
+                'created_at' => $message->created_at->toIso8601String(),
+                'display_time' => $time,
+            ];
+        });
 
         // Count pending messages for this user
         $pendingCount = Message::where('username', session('nickname'))
@@ -60,7 +76,7 @@ class ChatController extends Controller
 
         session(['pending_messages_count' => $pendingCount]);
 
-        return view('chat-new', compact('messages'));
+        return view('chat-new', compact('messages', 'messagesPayload'));
     }
 
     public function store(Request $request): RedirectResponse

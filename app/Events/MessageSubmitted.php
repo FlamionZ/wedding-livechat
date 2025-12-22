@@ -37,7 +37,10 @@ class MessageSubmitted implements ShouldBroadcastNow
             'content' => $this->message->content,
             'status' => $this->message->status,
             'created_at' => $this->message->created_at?->toIso8601String(),
-            'image_path' => $this->message->image_path,
+            'image_path' => $this->message->image_path ? asset($this->message->image_path) : null,
+            'display_time' => $this->message->created_at
+                ? $this->message->created_at->timezone(config('app.timezone'))->format('H:i')
+                : null,
         ];
     }
 }
