@@ -318,9 +318,11 @@ const initAdminDashboard = () => {
 		wireActionForm(rejectForm);
 	};
 
-	const scrollFeedBottom = (behavior = 'smooth') => {
+	const scrollFeedBottom = (behavior = 'auto') => {
 		if (feedScroll) {
-			feedScroll.scrollTo({ top: feedScroll.scrollHeight, behavior });
+			// Force scroll ke paling bawah dengan nilai yang sangat besar
+			feedScroll.scrollTop = feedScroll.scrollHeight + 99999;
+			console.log('📍 Feed scroll:', feedScroll.scrollTop, '/', feedScroll.scrollHeight);
 		}
 	};
 
@@ -364,23 +366,63 @@ const initAdminDashboard = () => {
 			img.alt = 'Foto ucapan';
 			img.loading = 'lazy';
 			img.className = 'max-h-60 rounded-lg border border-emerald-200 shadow-sm';
+			
+			// Force scroll setelah gambar dimuat
+			img.addEventListener('load', () => {
+				scrollFeedBottom();
+				setTimeout(scrollFeedBottom, 50);
+				setTimeout(scrollFeedBottom, 100);
+			});
+			img.addEventListener('error', () => {
+				scrollFeedBottom();
+			});
+			
 			imgWrap.appendChild(img);
 			card.appendChild(imgWrap);
 		}
 
 		feedList?.appendChild(card);
+		
+		// Multiple scroll attempts untuk memastikan sampai bawah
 		scrollFeedBottom();
+		requestAnimationFrame(scrollFeedBottom);
+		setTimeout(scrollFeedBottom, 0);
+		setTimeout(scrollFeedBottom, 50);
+		setTimeout(scrollFeedBottom, 100);
+		setTimeout(scrollFeedBottom, 200);
+		setTimeout(scrollFeedBottom, 500);
 	};
 
 	root.querySelectorAll('form[data-action]').forEach(wireActionForm);
 
-	// Pastikan feed awal berada di bawah (pesan terbaru di bawah)
-	setTimeout(() => {
-		const lastFeed = feedList?.lastElementChild;
-		if (lastFeed) {
-			feedScroll?.scrollTo({ top: feedScroll.scrollHeight, behavior: 'auto' });
+	// Pastikan feed awal berada di bawah (pesan terbaru di bawah) dengan force scroll
+	const forceInitialScroll = () => {
+		if (feedScroll) {
+			feedScroll.scrollTop = feedScroll.scrollHeight + 99999;
+			console.log('📍 Initial feed scroll:', feedScroll.scrollTop, '/', feedScroll.scrollHeight);
 		}
-	}, 50);
+	};
+	
+	// Multiple attempts untuk initial scroll
+	forceInitialScroll();
+	requestAnimationFrame(forceInitialScroll);
+	setTimeout(forceInitialScroll, 0);
+	setTimeout(forceInitialScroll, 50);
+	setTimeout(forceInitialScroll, 100);
+	setTimeout(forceInitialScroll, 200);
+	setTimeout(forceInitialScroll, 500);
+	
+	// Scroll setelah semua gambar di feed dimuat
+	const feedImages = feedScroll?.querySelectorAll('img');
+	feedImages?.forEach(img => {
+		if (!img.complete) {
+			img.addEventListener('load', forceInitialScroll);
+			img.addEventListener('error', forceInitialScroll);
+		}
+	});
+	
+	// Scroll saat window fully loaded
+	window.addEventListener('load', forceInitialScroll);
 
 	if (window.Echo) {
 		console.log('🔌 Admin: Subscribing to channels...');

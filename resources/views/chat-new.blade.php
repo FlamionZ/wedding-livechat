@@ -83,7 +83,7 @@
     </div>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-5">
         <!-- Alert Messages -->
         @if (session('pending_messages_count') && session('pending_messages_count') > 0)
         <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-2xl p-5 shadow-sm animate-slideDown">
@@ -118,74 +118,13 @@
         </div>
         @endif
 
-        <!-- Main Grid -->
-        <div id="chat-app" data-messages='@json($messagesPayload)' class="grid lg:grid-cols-3 gap-6">
-            <!-- Chat Messages (Left 2/3) -->
-            <section class="lg:col-span-2 space-y-4">
-                <!-- Section Header -->
-                <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 p-6">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-                                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-bold text-gray-900">Live Chat Messages</h2>
-                                <p class="text-sm text-gray-500">Pesan yang telah disetujui</p>
-                            </div>
-                        </div>
-                        <span class="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-800 text-xs font-bold rounded-full">
-                            <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                            LIVE
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Messages Container -->
-                <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 overflow-hidden">
-                    <div class="p-6">
-                        <div class="bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 rounded-2xl p-4 h-[580px] overflow-y-auto space-y-4 custom-scrollbar" data-chat-scroll id="chatScrollContainer">
-                            <p data-empty-chat class="text-center py-16 {{ $messages->isNotEmpty() ? 'hidden' : '' }}">
-                                <span class="inline-block text-6xl mb-4">💌</span>
-                                <span class="block text-lg text-gray-500 font-medium">Belum ada pesan</span>
-                                <span class="block text-sm text-gray-400">Jadilah yang pertama mengirim ucapan!</span>
-                            </p>
-                            <ul data-chat-list class="space-y-4">
-                                @foreach ($messages as $message)
-                                    <li class="group bg-white rounded-2xl p-3 sm:p-5 shadow-md hover:shadow-xl border border-gray-100 transition-all duration-300 animate-slideUp">
-                                        <div class="flex items-start space-x-4">
-                                            <div class="flex-shrink-0">
-                                                <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-rose-400 via-pink-400 to-purple-400 flex items-center justify-center text-white font-bold text-base sm:text-lg shadow-lg group-hover:scale-110 transition-transform">
-                                                    {{ strtoupper(substr($message->username, 0, 1)) }}
-                                                </div>
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <div class="flex items-center justify-between mb-2">
-                                                    <span class="text-sm sm:text-base font-bold text-gray-900">{{ $message->username }}</span>
-                                                    <span class="text-xs text-gray-500 font-medium">{{ $message->approved_at?->format('H:i') ?? $message->created_at->format('H:i') }}</span>
-                                                </div>
-                                                <p class="text-xs sm:text-sm text-gray-700 leading-relaxed">{{ $message->content }}</p>
-                                                @if ($message->image_path)
-                                                    <div class="mt-2">
-                                                        <img src="{{ asset($message->image_path) }}" alt="Foto ucapan" class="max-h-60 rounded-lg border border-gray-200 shadow-sm" loading="lazy">
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+        
             </section>
 
             <!-- Send Message Form (Right 1/3) -->
-            <section class="space-y-4">
+            <section class="space-y-3">
                 <!-- Section Header -->
-                <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 p-6">
+                <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 p-4">
                     <div class="flex items-center space-x-3">
                         <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -201,7 +140,7 @@
 
                 <!-- Form Card -->
                 <div class="bg-white/80 backdrop-blur-xl rounded-2xl shadow-sm border border-gray-200/50 overflow-hidden">
-                    <form action="{{ route('messages.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-6" id="messageForm">
+                    <form action="{{ route('messages.store') }}" method="POST" enctype="multipart/form-data" class="p-4 space-y-5" id="messageForm">
                         @csrf
                         <input type="hidden" name="username" value="{{ session('nickname', 'Guest') }}">
                         
@@ -220,18 +159,18 @@
                                                             </p>
                                                         @enderror
                                                     </div>
-                            <label class="block text-base font-black text-gray-900 uppercase tracking-wide" for="content">
+                            <label class="block text-sm font-black text-gray-900 uppercase tracking-wide" for="content">
                                 Pesan Anda
                             </label>
                             <div class="relative">
                                 <textarea 
                                     id="content" 
                                     name="content" 
-                                    rows="7" 
+                                    rows="5" 
                                     maxlength="500" 
                                     required
                                     placeholder="Tulis doa, ucapan selamat, atau kesan Anda untuk pengantin..."
-                                    class="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:border-rose-500 focus:ring-4 focus:ring-rose-100 focus:bg-white transition-all outline-none text-gray-900 placeholder-gray-400 resize-none text-sm leading-relaxed"
+                                    class="w-full px-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-2xl focus:border-rose-500 focus:ring-4 focus:ring-rose-100 focus:bg-white transition-all outline-none text-gray-900 placeholder-gray-400 resize-none text-sm leading-relaxed"
                                 >{{ old('content') }}</textarea>
                                 <div class="absolute bottom-3 right-3 text-xs font-bold text-gray-400 transition-all" id="charCount">0/500</div>
                             </div>
@@ -246,7 +185,7 @@
                         </div>
 
                         <!-- Info Box -->
-                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200/60 rounded-2xl p-4">
+                        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200/60 rounded-2xl p-3">
                             <div class="flex items-start space-x-3">
                                 <svg class="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
@@ -260,7 +199,7 @@
                         <!-- Submit Button -->
                         <button 
                             type="submit"
-                            class="group relative w-full text-white font-bold py-4 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 active:scale-100 active:translate-y-0 transition-all duration-200 overflow-hidden"
+                            class="group relative w-full text-white font-bold py-3 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1 active:scale-100 active:translate-y-0 transition-all duration-200 overflow-hidden"
                             style="background: linear-gradient(90deg, #f43f5e 0%, #ec4899 50%, #a855f7 100%);"
                             onmouseover="this.style.background='linear-gradient(90deg, #e11d48 0%, #db2777 50%, #9333ea 100%)'"
                             onmouseout="this.style.background='linear-gradient(90deg, #f43f5e 0%, #ec4899 50%, #a855f7 100%)'"

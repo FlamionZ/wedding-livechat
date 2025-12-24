@@ -12,6 +12,8 @@ Route::get('/logout', [ChatController::class, 'logout'])->name('chat.logout');
 
 Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(function () {
     Route::get('/dashboard', [MessageModerationController::class, 'index'])->name('dashboard');
+    Route::get('/messages/download/chats', [MessageModerationController::class, 'downloadMessages'])->name('messages.download.chats');
+    Route::get('/messages/download/photos', [MessageModerationController::class, 'downloadPhotos'])->name('messages.download.photos');
     Route::post('/messages/{message}/approve', [MessageModerationController::class, 'approve'])->name('messages.approve');
     Route::post('/messages/{message}/reject', [MessageModerationController::class, 'reject'])->name('messages.reject');
 });
