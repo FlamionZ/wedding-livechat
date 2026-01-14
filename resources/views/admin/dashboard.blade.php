@@ -112,8 +112,8 @@
                     <span class="text-white/80 text-xs mt-2 mb-2">Gunakan area ini untuk OBS/vMix, background bisa diganti saat live.</span>
                 </div>
                 <!-- Feed Pesan Live di dalam Greenscreen -->
-                <div class="w-full flex-1 flex flex-col items-center justify-start">
-                    <div class="w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto bg-[#00FF00] rounded-xl shadow border border-emerald-200 p-2 sm:p-4 mt-2" style="max-height:340px; min-height:120px; overflow-y:auto;" data-feed-scroll>
+                <div class="w-full flex-1 flex flex-col items-center justify-start px-4">
+                    <div class="w-full max-w-4xl bg-[#00FF00] rounded-xl shadow border border-emerald-200 p-2 sm:p-3 mt-2" style="max-height:360px; min-height:140px; overflow-y:auto;" data-feed-scroll>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-xs uppercase tracking-[0.2em] text-emerald-600">Live Feed</span>
                             <span class="px-2 py-0.5 text-xs rounded-full bg-yellow-200 text-yellow-900 border border-yellow-300">On Air</span>
